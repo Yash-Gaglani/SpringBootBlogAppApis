@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService{
 	private UserRepository user_repo; 
 //	We are autowiring the interface without any implememtation class which is something strange
 //	Class Name: jdk.proxy2.$Proxy99 this class is made at runtime
+	
+	@Autowired
+	private ModelMapper modelmapper;
 	
 	@Override
 	public UserDTO createUser(UserDTO userdto) {
@@ -66,22 +70,25 @@ public class UserServiceImpl implements UserService{
 //	passing to the database we need to convert into data object so we use model mapper or create the functions
 	
 	private User dtoToUser(UserDTO udto) {
-		User user = new User();
-		user.setId(udto.getId());
-		user.setName(udto.getName());
-		user.setEmail(udto.getEmail());
-		user.setAbout(udto.getAbout());
-		user.setPassword(udto.getPassword());
+		User user = modelmapper.map(udto, User.class);
+		
+// We can manually convert the userDTO to user by using		
+//		User user = new User();
+//		user.setId(udto.getId());
+//		user.setName(udto.getName());
+//		user.setEmail(udto.getEmail());
+//		user.setAbout(udto.getAbout());
+//		user.setPassword(udto.getPassword());
 		return user;
 	}
 	
 	private UserDTO userToDto(User user) {
-		UserDTO dto = new UserDTO();
-		dto.setAbout(user.getAbout());
-		dto.setId(user.getId());
-		dto.setName(user.getName());
-		dto.setPassword(user.getPassword());
-		dto.setEmail(user.getEmail());
+		UserDTO dto = modelmapper.map(user, UserDTO.class);
+//		dto.setAbout(user.getAbout());
+//		dto.setId(user.getId());
+//		dto.setName(user.getName());
+//		dto.setPassword(user.getPassword());
+//		dto.setEmail(user.getEmail());
 		return dto;
 	}
 
